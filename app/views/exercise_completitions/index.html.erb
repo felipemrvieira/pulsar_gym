@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Exercise completitions</h1>
+
+<div id="exercise_completitions">
+  <% @exercise_completitions.each do |exercise_completition| %>
+    <%= render exercise_completition %>
+    <p>
+      <%= link_to "Show this exercise completition", exercise_completition %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New exercise completition", new_exercise_completition_path %>

@@ -1,0 +1,32 @@
+<%= form_with(model: exercise_completition) do |form| %>
+  <% if exercise_completition.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(exercise_completition.errors.count, "error") %> prohibited this exercise_completition from being saved:</h2>
+
+      <ul>
+        <% exercise_completition.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :load, style: "display: block" %>
+    <%= form.text_field :load %>
+  </div>
+
+  <div>
+    <%= form.label :checkin_id, style: "display: block" %>
+    <%= form.text_field :checkin_id %>
+  </div>
+
+  <div>
+    <%= form.label :exercise_id, style: "display: block" %>
+    <%= form.text_field :exercise_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

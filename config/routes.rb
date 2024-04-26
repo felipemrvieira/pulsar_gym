@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  resources :exercise_completitions
+  resources :checkins
+  resources :exercises
+  resources :workouts
   resources :measures
   resources :examinations
   resources :enrollments
