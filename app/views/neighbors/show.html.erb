@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @neighbor %>
+
+<div>
+  <%= link_to "Edit this neighbor", edit_neighbor_path(@neighbor) %> |
+  <%= link_to "Back to neighbors", neighbors_path %>
+
+  <%= button_to "Destroy this neighbor", @neighbor, method: :delete %>
+</div>

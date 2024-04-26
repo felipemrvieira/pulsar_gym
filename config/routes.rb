@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  resources :addresses
+  resources :neighbors
+  resources :cities
+  resources :states
+  resources :countries
   devise_for :recepcionists
   resources :subscriptions
   resources :subscription_plans

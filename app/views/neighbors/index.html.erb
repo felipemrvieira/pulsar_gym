@@ -1,0 +1,14 @@
+<p style="color: green"><%= notice %></p>
+
+<h1>Neighbors</h1>
+
+<div id="neighbors">
+  <% @neighbors.each do |neighbor| %>
+    <%= render neighbor %>
+    <p>
+      <%= link_to "Show this neighbor", neighbor %>
+    </p>
+  <% end %>
+</div>
+
+<%= link_to "New neighbor", new_neighbor_path %>
