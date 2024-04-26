@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_06_183247) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_25_201015) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,12 +20,10 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_06_183247) do
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.bigint "super_admin_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
-    t.index ["super_admin_id"], name: "index_admins_on_super_admin_id"
   end
 
   create_table "gyms", force: :cascade do |t|
@@ -34,6 +32,36 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_06_183247) do
     t.string "logo"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "admin_id", null: false
+    t.index ["admin_id"], name: "index_gyms_on_admin_id"
+  end
+
+  create_table "plans", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "subscription_plans", force: :cascade do |t|
+    t.string "name"
+    t.integer "price_cents", default: 0, null: false
+    t.datetime "expiration"
+    t.bigint "super_admin_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["super_admin_id"], name: "index_subscription_plans_on_super_admin_id"
+  end
+
+  create_table "subscriptions", force: :cascade do |t|
+    t.integer "price_cents", default: 0, null: false
+    t.datetime "expiration"
+    t.bigint "gym_id", null: false
+    t.bigint "subscription_plan_id", null: false
+    t.boolean "is_active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gym_id"], name: "index_subscriptions_on_gym_id"
+    t.index ["subscription_plan_id"], name: "index_subscriptions_on_subscription_plan_id"
   end
 
   create_table "super_admins", force: :cascade do |t|
@@ -48,4 +76,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_06_183247) do
     t.index ["reset_password_token"], name: "index_super_admins_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "gyms", "admins"
+  add_foreign_key "subscription_plans", "super_admins"
+  add_foreign_key "subscriptions", "gyms"
+  add_foreign_key "subscriptions", "subscription_plans"
 end

@@ -8,9 +8,20 @@
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%# javascript_include_tag :defaults %>
   </head>
 
   <body>
+    <% if super_admin_signed_in? %>
+      <p>super admin logado</p>
+      <%= link_to "Sign out", destroy_super_admin_session_path, method: :delete %>
+      <%= button_to "logout", destroy_super_admin_session_path, method: :delete  %>
+
+    <% end %>
+    <% if admin_signed_in? %>
+      <p>admin logado</p>
+      <%= link_to "Sign out", destroy_admin_session_path, method: :delete %>
+    <% end %>
     <%= yield %>
   </body>
 </html>

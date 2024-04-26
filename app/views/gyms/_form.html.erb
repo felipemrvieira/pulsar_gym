@@ -27,6 +27,11 @@
   </div>
 
   <div>
+    <%= form.label :admin_id, 'Admin', style: "display: block" %>
+    <%= form.collection_select :admin_id, Admin.all, :id, :email, include_blank: true %>
+  </div>
+
+  <div>
     <%= form.submit %>
   </div>
 <% end %>
