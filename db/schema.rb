@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_26_144939) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_26_205629) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,9 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_26_144939) do
     t.datetime "updated_at", null: false
     t.decimal "lat", precision: 10, scale: 6
     t.decimal "lng", precision: 10, scale: 6
+    t.string "addressable_type"
+    t.bigint "addressable_id"
+    t.index ["addressable_type", "addressable_id"], name: "index_addresses_on_addressable"
     t.index ["neighbor_id"], name: "index_addresses_on_neighbor_id"
   end
 
@@ -52,6 +55,53 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_26_144939) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "customers", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.date "birthdate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_customers_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
+  end
+
+  create_table "enrollments", force: :cascade do |t|
+    t.string "obs"
+    t.integer "price_cents"
+    t.datetime "expiration"
+    t.boolean "is_active"
+    t.bigint "plan_id", null: false
+    t.bigint "customer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_enrollments_on_customer_id"
+    t.index ["plan_id"], name: "index_enrollments_on_plan_id"
+  end
+
+  create_table "examinations", force: :cascade do |t|
+    t.datetime "expiration"
+    t.bigint "instructor_id", null: false
+    t.bigint "customer_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_examinations_on_customer_id"
+    t.index ["instructor_id"], name: "index_examinations_on_instructor_id"
+  end
+
+  create_table "gym_plans", force: :cascade do |t|
+    t.string "name"
+    t.integer "price_cents"
+    t.datetime "expiration"
+    t.boolean "is_active"
+    t.bigint "gym_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["gym_id"], name: "index_gym_plans_on_gym_id"
+  end
+
   create_table "gyms", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -60,6 +110,29 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_26_144939) do
     t.datetime "updated_at", null: false
     t.bigint "admin_id", null: false
     t.index ["admin_id"], name: "index_gyms_on_admin_id"
+  end
+
+  create_table "instructors", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.bigint "gym_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_instructors_on_email", unique: true
+    t.index ["gym_id"], name: "index_instructors_on_gym_id"
+    t.index ["reset_password_token"], name: "index_instructors_on_reset_password_token", unique: true
+  end
+
+  create_table "measures", force: :cascade do |t|
+    t.string "body_part"
+    t.integer "value"
+    t.bigint "examination_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["examination_id"], name: "index_measures_on_examination_id"
   end
 
   create_table "neighbors", force: :cascade do |t|
@@ -134,7 +207,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_26_144939) do
 
   add_foreign_key "addresses", "neighbors"
   add_foreign_key "cities", "states"
+  add_foreign_key "enrollments", "customers"
+  add_foreign_key "enrollments", "plans"
+  add_foreign_key "examinations", "customers"
+  add_foreign_key "examinations", "instructors"
+  add_foreign_key "gym_plans", "gyms"
   add_foreign_key "gyms", "admins"
+  add_foreign_key "measures", "examinations"
   add_foreign_key "neighbors", "cities"
   add_foreign_key "states", "countries"
   add_foreign_key "subscription_plans", "super_admins"

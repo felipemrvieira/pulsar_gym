@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  resources :measures
+  resources :examinations
+  resources :enrollments
+  resources :gym_plans
+  devise_for :customers
+  devise_for :instructors
   resources :addresses
   resources :neighbors
   resources :cities

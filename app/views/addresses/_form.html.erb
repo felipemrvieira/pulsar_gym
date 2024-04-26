@@ -25,13 +25,15 @@
     <%= form.label :complement, style: "display: block" %>
     <%= form.text_field :complement %>
   </div>
-  <div>
-    <%= form.label :latitude, style: "display: block" %>
-    <%= form.text_field :lat %>
+ 
+  <div class="field">
+    <%= form.label :latitude %>
+    <%= form.number_field :lat, step: :any %>
   </div>
-  <div>
-    <%= form.label :longitude, style: "display: block" %>
-    <%= form.text_field :lng %>
+
+  <div class="field">
+    <%= form.label :longitude %>
+    <%= form.number_field :lng, step: :any %>
   </div>
 
   <div>
