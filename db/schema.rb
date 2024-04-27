@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_04_26_205629) do
+ActiveRecord::Schema[7.0].define(version: 2024_04_26_235203) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -39,6 +39,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_26_205629) do
     t.datetime "updated_at", null: false
     t.index ["email"], name: "index_admins_on_email", unique: true
     t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
+  end
+
+  create_table "checkins", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.bigint "gym_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_checkins_on_customer_id"
+    t.index ["gym_id"], name: "index_checkins_on_gym_id"
   end
 
   create_table "cities", force: :cascade do |t|
@@ -89,6 +98,25 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_26_205629) do
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_examinations_on_customer_id"
     t.index ["instructor_id"], name: "index_examinations_on_instructor_id"
+  end
+
+  create_table "exercise_completitions", force: :cascade do |t|
+    t.string "load"
+    t.bigint "checkin_id", null: false
+    t.bigint "exercise_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["checkin_id"], name: "index_exercise_completitions_on_checkin_id"
+    t.index ["exercise_id"], name: "index_exercise_completitions_on_exercise_id"
+  end
+
+  create_table "exercises", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.bigint "workout_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["workout_id"], name: "index_exercises_on_workout_id"
   end
 
   create_table "gym_plans", force: :cascade do |t|
@@ -205,12 +233,25 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_26_205629) do
     t.index ["reset_password_token"], name: "index_super_admins_on_reset_password_token", unique: true
   end
 
+  create_table "workouts", force: :cascade do |t|
+    t.string "name"
+    t.bigint "examination_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["examination_id"], name: "index_workouts_on_examination_id"
+  end
+
   add_foreign_key "addresses", "neighbors"
+  add_foreign_key "checkins", "customers"
+  add_foreign_key "checkins", "gyms"
   add_foreign_key "cities", "states"
   add_foreign_key "enrollments", "customers"
   add_foreign_key "enrollments", "plans"
   add_foreign_key "examinations", "customers"
   add_foreign_key "examinations", "instructors"
+  add_foreign_key "exercise_completitions", "checkins"
+  add_foreign_key "exercise_completitions", "exercises"
+  add_foreign_key "exercises", "workouts"
   add_foreign_key "gym_plans", "gyms"
   add_foreign_key "gyms", "admins"
   add_foreign_key "measures", "examinations"
@@ -219,4 +260,5 @@ ActiveRecord::Schema[7.0].define(version: 2024_04_26_205629) do
   add_foreign_key "subscription_plans", "super_admins"
   add_foreign_key "subscriptions", "gyms"
   add_foreign_key "subscriptions", "subscription_plans"
+  add_foreign_key "workouts", "examinations"
 end
